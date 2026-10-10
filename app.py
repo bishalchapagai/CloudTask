@@ -1,91 +1,30 @@
 import json;
-tasks = []
+from tasks import addTask,updateTask,viewTask,loadTasks,searchTask,saveTasks,deleteTask;
+
+
+
+tasks = [];
 def load_tasks():
     global tasks;
-    try:
-        with open("tasks.json", "r") as file:
-            tasks = json.load(file)
-    except FileNotFoundError:
-        print("No existing tasks found. Starting with an empty task list.")
-def save_tasks():
-    with open("tasks.json","w") as file:
-        json.dump(tasks, file,indent =4);
-    print("Tasks saved to tasks.json");
-
-def add_task(task_name, priority_level):
-    tasks.append({
-        "task": task_name,
-        "priority": priority_level,
-        "status": "incomplete"
-    })
+    tasks = loadTasks();
 
 
-def view_tasks():
-    if not tasks:
-        print("No Task Available")
-    else:
-        print("\n---Task List---")
-        for index, t in enumerate(tasks, start=1):
-            print(f"{index}. Task: {t['task']} / priority: {t['priority']} / status: {t['status']}")
+def search_task():
+    searchTask(tasks);
 
-
-def update_task():
-    if not tasks:
-        print("No task to Update")
-        return
-    else:
-        view_tasks()
-        try:
-            task_index = int(input("Enter the task number to update: ")) - 1
-
-            if 0 <= task_index < len(tasks):
-                new_task_name = input("Enter new Task: ")
-                new_priority = input("Enter new Priority (High/Medium/Low): ")
-                tasks[task_index]["task"] = new_task_name
-                tasks[task_index]["priority"] = new_priority
-                print("Task updated successfully.")
-            else:
-                print("Invalid task number.")
-
-        except ValueError:
-            print("Invalid input. Please enter a valid task number.")
-
+#view tasks
+def view_tasks(tasks):
+     viewTask(tasks);
+    
 
 def delete_task():
-    if not tasks:
-        print("No task to Delete.")
-    else:
-        view_tasks()
-        try:
-            task_index = int(input("Enter the task number: ")) - 1
-
-            if 0 <= task_index < len(tasks):
-                tasks.pop(task_index)
-                print("Task deleted successfully.")
-            else:
-                print("Invalid task number.")
-
-        except ValueError:
-            print("Invalid input. Please enter a valid task number.")
-
+    deleteTask(tasks);
 
 def task_completed():
-    if not tasks:
-        print("No task to mark as completed.")
-    else:
-        view_tasks()
-        try:
-            task_index = int(input("Enter the task number to mark as completed: ")) - 1
+    task_completed(tasks);
 
-            if 0 <= task_index < len(tasks):
-                tasks[task_index]["status"] = "completed"
-                print(f"Task '{tasks[task_index]['task']}' marked as completed.")
-            else:
-                print("Invalid task number.")
-
-        except ValueError:
-            print("Invalid input. Please enter a valid task number.")
-
+def save_tasks():
+    saveTasks(tasks);
 
 def main():
     load_tasks()
@@ -100,20 +39,19 @@ def main():
         print("4. Delete Task")
         print("5. Mark Task as Completed")
         print("6. Save Tasks to JSON");
-        print("7. Exit")
+        print("7. search")
+        print("8. Exit")
 
         choice = input("Enter your choice (1/2/3/4/5/6): ")
 
         if choice == "1":
-            task_name = input("Enter Task: ")
-            priority = input("Enter Priority (High/Medium/Low): ")
-            add_task(task_name, priority)
+            addTask(tasks);
 
         elif choice == "2":
-            view_tasks()
+            view_tasks(tasks);
 
         elif choice == "3":
-            update_task()
+            updateTask(tasks);
 
         elif choice == "4":
             delete_task()
@@ -123,8 +61,9 @@ def main():
 
         elif choice == "6":
             save_tasks()
-
         elif choice == "7":
+            search_task()
+        elif choice == "8":
             print("Exiting the program. Goodbye!")
             break
 

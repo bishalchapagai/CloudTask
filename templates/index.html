@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CloudTask Manager</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h1>☁ CloudTask Manager</h1>
+            <p>Manage your tasks efficiently.</p>
+        </header>
+
+        <section class="stats">
+            <div class="stat-card">
+                <h3>Total Tasks</h3>
+                <p id="totalTasks">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Pending</h3>
+                <p id="pendingTasks">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Completed</h3>
+                <p id="completedTasks">0</p>
+            </div>
+        </section>
+
+        <section class="add-section">
+            <h2>Add New Task</h2>
+
+            <form id="taskForm">
+                <input
+                    type="text"
+                    id="taskName"
+                    placeholder="Enter task name..."
+                    required
+                >
+
+                <select id="priority">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+
+                <button type="submit">Add Task</button>
+            </form>
+        </section>
+
+        <section class="task-section">
+            <h2>Your Tasks</h2>
+
+            <div id="taskList">
+                <p class="empty-message">
+                    No tasks available.
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

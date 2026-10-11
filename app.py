@@ -1,75 +1,129 @@
-import json;
-from tasks import addTask,updateTask,viewTask,loadTasks,searchTask,saveTasks,deleteTask;
+
+import json
+from pathlib import Path
+from uuid import uuid4
+
+from flask import Flask, jsonify, render_template, request
+
+app = Flask(__name__)
+
+DATA_FILE = Path(__file__).resolve().parent / "tasks.json"
 
 
-
-tasks = [];
+# READ TASKS FROM JSON
 def load_tasks():
-    global tasks;
-    tasks = loadTasks();
+    if not DATA_FILE.exists():
+        return []
+
+    with open(DATA_FILE, "r", encoding="utf-8") as file:
+        tasks = json.load(file)
+
+    if not isinstance(tasks, list):
+        raise ValueError("tasks.json must contain a list")
+
+    # Support tasks created by our earlier CLI program
+    changed = False
+
+    for task in tasks:
+        if not isinstance(task, dict):
+            raise ValueError("Each task must be a JSON object")
+
+        if "id" not in task:
+            task["id"] = str(uuid4())
+            changed = True
+
+        if "status" not in task:
+            task["status"] = "incomplete"
+            changed = True
+
+    if changed:
+        save_tasks(tasks)
+
+    return tasks
 
 
-def search_task():
-    searchTask(tasks);
+# SAVE TASKS TO JSON
+def save_tasks(tasks):
+    with open(DATA_FILE, "w", encoding="utf-8") as file:
+        json.dump(tasks, file, indent=4)
 
-#view tasks
-def view_tasks(tasks):
-     viewTask(tasks);
-    
 
-def delete_task():
-    deleteTask(tasks);
+# HOMEPAGE
+@app.route("/")
+def home():
+    return render_template("index.html")
 
-def task_completed():
-    task_completed(tasks);
 
-def save_tasks():
-    saveTasks(tasks);
+# GET ALL TASKS
+@app.route("/api/tasks", methods=["GET"])
+def get_tasks():
+    tasks = load_tasks()
+    return jsonify(tasks)
 
-def main():
-    load_tasks()
-    print("===Welcome to CloudTask Management===")
-    print("--CloudTask: --")
 
-    while True:
-        print("\n---Task Management Menu---")
-        print("1. Add Task")
-        print("2. View Task")
-        print("3. Update Task")
-        print("4. Delete Task")
-        print("5. Mark Task as Completed")
-        print("6. Save Tasks to JSON");
-        print("7. search")
-        print("8. Exit")
+# ADD A TASK
+@app.route("/api/tasks", methods=["POST"])
+def add_task():
+    data = request.get_json(silent=True)
 
-        choice = input("Enter your choice (1/2/3/4/5/6): ")
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid JSON data"}), 400
 
-        if choice == "1":
-            addTask(tasks);
+    name = data.get("task", "")
+    priority = data.get("priority", "Medium")
 
-        elif choice == "2":
-            view_tasks(tasks);
+    if not isinstance(name, str) or not name.strip():
+        return jsonify({"error": "Task name is required"}), 400
 
-        elif choice == "3":
-            updateTask(tasks);
+    if priority not in ("High", "Medium", "Low"):
+        return jsonify({"error": "Invalid priority"}), 400
 
-        elif choice == "4":
-            delete_task()
+    tasks = load_tasks()
 
-        elif choice == "5":
-            task_completed()
+    new_task = {
+        "id": str(uuid4()),
+        "task": name.strip(),
+        "priority": priority,
+        "status": "incomplete"
+    }
 
-        elif choice == "6":
-            save_tasks()
-        elif choice == "7":
-            search_task()
-        elif choice == "8":
-            print("Exiting the program. Goodbye!")
-            break
+    tasks.append(new_task)
+    save_tasks(tasks)
 
-        else:
-            print("Invalid choice. Please try again.")
+    return jsonify(new_task), 201
+
+
+# COMPLETE A TASK
+@app.route("/api/tasks/<task_id>", methods=["PATCH"])
+def complete_task(task_id):
+    tasks = load_tasks()
+
+    for task in tasks:
+        if str(task["id"]) == task_id:
+            task["status"] = "completed"
+            save_tasks(tasks)
+            return jsonify(task)
+
+    return jsonify({"error": "Task not found"}), 404
+
+
+# DELETE A TASK
+@app.route("/api/tasks/<task_id>", methods=["DELETE"])
+def delete_task(task_id):
+    tasks = load_tasks()
+
+    remaining = [
+        task for task in tasks
+        if str(task["id"]) != task_id
+    ]
+
+    if len(remaining) == len(tasks):
+        return jsonify({"error": "Task not found"}), 404
+
+    save_tasks(remaining)
+
+    return jsonify({"message": "Task deleted successfully"})
 
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=True)

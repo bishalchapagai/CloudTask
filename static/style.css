@@ -1,0 +1,271 @@
+
+/* ===== GLOBAL STYLES ===== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f6fb;
+    color: #1e293b;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+/* ===== HEADER ===== */
+
+header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+header h1 {
+    font-size: 36px;
+    color: #2563eb;
+    margin-bottom: 10px;
+}
+
+header p {
+    font-size: 16px;
+    color: #64748b;
+}
+
+/* ===== DASHBOARD STATISTICS ===== */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+}
+
+.stat-card h3 {
+    font-size: 15px;
+    color: #64748b;
+    margin-bottom: 12px;
+}
+
+.stat-card p {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+/* ===== SECTIONS ===== */
+
+.add-section,
+.task-section {
+    background-color: white;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+/* ===== ADD TASK FORM ===== */
+
+#taskForm {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+#taskName {
+    flex: 1;
+    min-width: 0;
+}
+
+input,
+select {
+    padding: 12px 15px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    background-color: white;
+}
+
+input:focus,
+select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* ===== BUTTONS ===== */
+
+button {
+    padding: 12px 20px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+button:hover {
+    background-color: #1d4ed8;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== TASK LIST ===== */
+
+#taskList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.task-item:hover {
+    background-color: #eff6ff;
+}
+
+.task-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-info h3 {
+    font-size: 16px;
+    margin-bottom: 6px;
+    overflow-wrap: anywhere;
+}
+
+.task-info p {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.task-item.completed {
+    opacity: 0.65;
+}
+
+.task-item.completed .task-info h3 {
+    text-decoration: line-through;
+}
+
+/* ===== PRIORITY LABELS ===== */
+
+.priority-high {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+.priority-medium {
+    color: #d97706;
+    font-weight: bold;
+}
+
+.priority-low {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+/* ===== TASK ACTIONS ===== */
+
+.task-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.complete-btn {
+    background-color: #16a34a;
+}
+
+.complete-btn:hover {
+    background-color: #15803d;
+}
+
+.delete-btn {
+    background-color: #dc2626;
+}
+
+.delete-btn:hover {
+    background-color: #b91c1c;
+}
+
+/* ===== EMPTY TASK MESSAGE ===== */
+
+.empty-message {
+    text-align: center;
+    color: #94a3b8;
+    padding: 25px;
+    font-size: 15px;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+@media (max-width: 600px) {
+
+    .container {
+        margin: 15px auto;
+        padding: 15px;
+    }
+
+    header h1 {
+        font-size: 28px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    #taskForm {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .task-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .task-actions {
+        justify-content: flex-end;
+    }
+}
